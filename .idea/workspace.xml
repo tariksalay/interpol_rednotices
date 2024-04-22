@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ee960d0e-5ede-41a3-b949-f8cac2894b6d" name="Changes" comment="up">
+    <list default="true" id="ee960d0e-5ede-41a3-b949-f8cac2894b6d" name="Changes" comment="head">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_B/consumer_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/consumer_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Container_A/producer(unused).py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Container_B/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Container_B/db(unused).py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Container_B/pg_hba.conf" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/pg_hba.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Container_B/postgresql.conf" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/postgresql.conf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -210,7 +214,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713750231589</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="head">
+      <option name="closed" value="true" />
+      <created>1713750672967</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1713750672967</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -274,6 +286,7 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="up" />
-    <option name="LAST_COMMIT_MESSAGE" value="up" />
+    <MESSAGE value="head" />
+    <option name="LAST_COMMIT_MESSAGE" value="head" />
   </component>
 </project>

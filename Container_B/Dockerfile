@@ -26,7 +26,7 @@ COPY connect_db.py /app/
 COPY webapp.py /app/myflaskapp/
 COPY templates/definition.html /app/myflaskapp/templates/
 #COPY start_app.sh /app/
-COPY pg_hba.conf ../etc/postgresql/15/main/pg_hba.conf
+#COPY pg_hba.conf C:/Program Files/postgresql/16/data/pg_hba.conf/
 
 # Give execute permissions to the startup script
 # RUN chmod +x /app/start_app.sh
