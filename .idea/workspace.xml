@@ -6,11 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ee960d0e-5ede-41a3-b949-f8cac2894b6d" name="Changes" comment="head">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_A/producer(unused).py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_B/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_B/db(unused).py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_B/pg_hba.conf" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/pg_hba.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_B/postgresql.conf" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/postgresql.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Container_A/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Container_A/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Container_B/templates/definition.html" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/templates/definition.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Container_B/webapp.py" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/webapp.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,10 +84,16 @@
     "Python.producer.executor": "Run",
     "Python.scraper.executor": "Run",
     "Python.scraper_producer.executor": "Run",
+    "Python.webapp.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master__head",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
+  },
+  "keyToStringList": {
+    "ChangesTree.GroupingKeys": [
+      "directory"
+    ]
   }
 }]]></component>
   <component name="RecentsManager">
@@ -98,7 +102,7 @@
       <recent name="C:\Users\user\PycharmProjects\tarik\Container_A" />
     </key>
   </component>
-  <component name="RunManager" selected="Docker.Container_A/Dockerfile">
+  <component name="RunManager">
     <configuration name="scraper_producer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="tarik" />
       <option name="ENV_FILES" value="" />
@@ -222,7 +226,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713750672967</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="head">
+      <option name="closed" value="true" />
+      <created>1713751251885</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1713751251885</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
