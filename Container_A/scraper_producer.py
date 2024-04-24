@@ -1,52 +1,68 @@
-# Scrape Interpol Red List
-
-from selenium import webdriver  # needed for scraping
+import time
+import pika
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-import time
-import pika  # needed for rabbitmq
 
-# from Container_A.producer import send_to_rabbitmq
+# load up the options to change
+options = Options()
 
-chrome_options = Options()  # load up the options to change
-chrome_options.add_argument("--no-sandbox")  # less secure, easier for development
+options.add_argument("--headless")
+# # less secure/faster for development, some needed for Docker
+options.add_argument("--no-sandbox")
+# overcome limited resource problems
+options.add_argument("--disable-dev-shm-usage")
+user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
+options.add_argument(f'user-agent={user_agent}')
 
 
 # scraping function , first page only
 def findRedNotices():
-    browser = webdriver.Chrome(options=chrome_options)  # start chrome
-    browser.get("https://www.interpol.int/How-we-work/Notices/Red-Notices/View-Red-Notices")  # go to redflag page
+    # start Chrome
+    # go to redflag page
+    url = "https://www.interpol.int/How-we-work/Notices/Red-Notices/View-Red-Notices/"
+    driver = webdriver.Chrome(options=options)
+    driver.get(url)
+    # driver = seleniumbase.Driver(browser="chrome", headless=False)
+    # url = "https://www.interpol.int/How-we-work/Notices/Red-Notices/View-Red-Notices/"
+    # driver.get(url)
 
-    time.sleep(2)  # give it 2 secs
-    red_notices_list = []  # to store later
+    # give it 2 secs
+    time.sleep(1)
+    # to store later
+    red_notices_list = []
 
-    names = browser.find_elements(By.CLASS_NAME, "redNoticeItem__labelLink")  # pull up the name
-    ages = browser.find_elements(By.CLASS_NAME, "age")  # pull up the age
-    nationalities = browser.find_elements(By.CLASS_NAME, "nationalities")  # pull up the nationality
+    # pull the name
+    names = driver.find_elements(By.CLASS_NAME, "redNoticeItem__labelLink")
+    # pull the age
+    ages = driver.find_elements(By.CLASS_NAME, "age")
+    # pull the nationality
+    nationalities = driver.find_elements(By.CLASS_NAME, "nationalities")
 
-    for name_element, age_element, nation_element in zip(names, ages, nationalities):  # $
+    for name_element, age_element, nation_element in zip(names, ages, nationalities):
         name = name_element.text.replace("\n", "")
         age = age_element.text
         nationality = nation_element.text
         red_notices_list.append({"Name": name, "Age": age, "Nationalities": nationality})
 
-    browser.quit()
+    driver.quit()
 
-    return red_notices_list  # return the list
+    # return the list
+    return red_notices_list
 
 
 # Push red notices list to rabbitmq queue
 
 def send_to_rabbitmq(message):
     # Connect to Container C (RabbitMQ queue)
-    connection_parameters = pika.ConnectionParameters('localhost')
+    connection_parameters = pika.ConnectionParameters('172.17.0.2')
+    # connection_parameters = pika.ConnectionParameters('localhost')
     rabbitmq_connection = pika.BlockingConnection(connection_parameters)
     channel = rabbitmq_connection.channel()  # creates the channel
 
     # Declare a queue along with its name
     # Durable = true to make the queue survive a broker restart
-    # channel.queue_declare(queue='red_notices_queue', durable=True)
-    channel.queue_declare(queue='red_notices_queue')
+    channel.queue_declare(queue='red_notices_queue', durable=True)
     print("Queue has been declared")
 
     # publish each item of data to the Container_C queue
