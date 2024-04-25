@@ -54,7 +54,7 @@ def findRedNotices():
 # Push red notices list to rabbitmq queue
 
 def send_to_rabbitmq(message):
-    # Connect to Container C (RabbitMQ queue)
+    # Connect to MQ
     connection_parameters = pika.ConnectionParameters('172.17.0.2')
     # connection_parameters = pika.ConnectionParameters('localhost')
     rabbitmq_connection = pika.BlockingConnection(connection_parameters)
@@ -62,7 +62,9 @@ def send_to_rabbitmq(message):
 
     # Declare a queue along with its name
     # Durable = true to make the queue survive a broker restart
+    # durable=True for Docker
     channel.queue_declare(queue='red_notices_queue', durable=True)
+    # channel.queue_declare(queue='red_notices_queue')
     print("Queue has been declared")
 
     # publish each item of data to the Container_C queue

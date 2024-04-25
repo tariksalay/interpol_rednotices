@@ -7,6 +7,7 @@ import psycopg2
 # to loop through everyone
 i = 0
 
+
 # https://www.postgresql.org/docs/current/libpq-connect.html
 # 34.1. Database Connection Control Functions
 
@@ -35,9 +36,9 @@ def callback(ch, method, properties, body):
 
 # Establish the connection
 connection = psycopg2.connect(
-    dbname="postgres",
+    dbname="postgres_db",
     user="postgres",
-    password="password",
+    password="postgres",
     host="localhost",
     port="5432"
 )
@@ -51,13 +52,16 @@ pg_cursor.execute("CREATE TABLE IF NOT EXISTS interpol_rednotices (ID SERIAL PRI
 connection.commit()
 
 # Copy the same lines from producer to declare the same connection
-connection_parameters = pika.ConnectionParameters('localhost')
+connection_parameters = pika.ConnectionParameters('172.17.0.2')
+# connection_parameters = pika.ConnectionParameters('localhost')
 rabbitmq_connection = pika.BlockingConnection(connection_parameters)
 channel = rabbitmq_connection.channel()  # creates the channel
 
 # it's ok to declare the queue with the same name, broker will know
 # wherever the code executes first will declare the queue while the other one is ignored
-channel.queue_declare(queue='red_notices_queue')
+# channel.queue_declare(queue='red_notices_queue')
+# durable=True for Docker
+channel.queue_declare(queue='red_notices_queue', durable=True)
 
 # to consume of the queue
 channel.basic_consume(queue='red_notices_queue', on_message_callback=callback, auto_ack=True)
