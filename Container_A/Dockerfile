@@ -12,7 +12,7 @@ FROM python:3.12.2
 
 # Directory (Where to copy in Docker Container)
 #WORKDIR /PycharmProjects/tarik/Container_A
-WORKDIR /Downloads/interpol_rednotices-master/Container_A
+WORKDIR /Desktop/docker-demo/interpol_rednotices-master/Container_A
 
 # Reqs (from local file system,
 COPY reqs.txt /app/

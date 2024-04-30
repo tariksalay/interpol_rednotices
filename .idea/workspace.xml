@@ -5,17 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee960d0e-5ede-41a3-b949-f8cac2894b6d" name="Changes" comment="head">
-      <change afterPath="$PROJECT_DIR$/Container_B/start_app.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Container_C/erlang-solutions_1.0_all.deb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Container_A/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Container_A/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Container_A/scraper_producer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Container_A/scraper_producer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_B/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Container_B/consumer_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/consumer_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_B/pg_hba.conf" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/pg_hba.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_B/postgresql.conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_B/templates/definition.html" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/templates/definition.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Container_B/webapp.py" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/webapp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +57,7 @@
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>
         <option name="accountId" value="868d655f-bc34-44a5-b82c-771afc91e64d" />
-        <option name="url" value="https://github.com/tariksalay/turkai.git" />
+        <option name="url" value="https://github.com/tariksalay/interpol_rednotices" />
       </UrlAndAccount>
     </option>
   </component>
@@ -87,6 +82,7 @@
     &quot;Docker.Container_A/Dockerfile.executor&quot;: &quot;Run&quot;,
     &quot;Docker.Container_B/Dockerfile.executor&quot;: &quot;Run&quot;,
     &quot;Docker.Container_C/Dockerfile.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml.container_a-1: Compose Deployment.executor&quot;: &quot;Run&quot;,
     &quot;Docker.docker-compose.yml.container_a: Compose Deployment.executor&quot;: &quot;Run&quot;,
     &quot;Docker.docker-compose.yml.container_b: Compose Deployment.executor&quot;: &quot;Run&quot;,
     &quot;Docker.docker-compose.yml.container_c: Compose Deployment.executor&quot;: &quot;Run&quot;,
@@ -102,8 +98,8 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master__head&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/user/Downloads/interpol_rednotices-master/Container_C&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/user/Desktop/docker-demo/interpol_rednotices-master&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors.Dockerfile&quot;
   },
   &quot;keyToStringList&quot;: {
     &quot;ChangesTree.GroupingKeys&quot;: [
@@ -120,29 +116,7 @@
       <recent name="C:\Users\user\PycharmProjects\tarik\Container_A" />
     </key>
   </component>
-  <component name="RunManager" selected="Docker.docker-compose.yml: Compose Deployment">
-    <configuration name="scraper_producer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="tarik" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Container_A" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Container_A/scraper_producer.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Docker.docker-compose.yml.container_a-1: Compose Deployment">
     <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
       <deployment type="docker-compose.yml">
         <settings />
@@ -158,6 +132,19 @@
     <configuration name="docker-compose.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
       <deployment type="docker-compose.yml">
         <settings>
+          <option name="sourceFilePath" value="docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="docker-compose.yml.container_a-1: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="services">
+            <list>
+              <option value="container_a-1" />
+            </list>
+          </option>
           <option name="sourceFilePath" value="docker-compose.yml" />
         </settings>
       </deployment>
@@ -204,11 +191,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yml.container_a-1: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yml.container_a: Compose Deployment" />
-        <item itemvalue="Docker.docker-compose.yml.container_b: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yml.container_c: Compose Deployment" />
-        <item itemvalue="Python.scraper_producer" />
+        <item itemvalue="Docker.docker-compose.yml.container_b: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
       </list>
     </recent_temporary>
   </component>
@@ -316,7 +303,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713924022321</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="head">
+      <option name="closed" value="true" />
+      <created>1714073448714</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1714073448714</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

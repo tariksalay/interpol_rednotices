@@ -25,7 +25,8 @@ def callback(ch, method, properties, body):
     nationality = data.get("Nationalities")
 
     i += 1
-    if i == 20:
+
+    if i == (queue.method.message_count):
         ch.stop_consuming()  # Stop consuming messages after processing 20
 
     # Insert data into Postgresql database
@@ -59,9 +60,12 @@ channel = rabbitmq_connection.channel()  # creates the channel
 
 # it's ok to declare the queue with the same name, broker will know
 # wherever the code executes first will declare the queue while the other one is ignored
-# channel.queue_declare(queue='red_notices_queue')
 # durable=True for Docker
+# queue = channel.queue_declare(queue='red_notices_queue')
+queue = channel.queue_declare(queue='red_notices_queue', durable=True)
+# channel.queue_declare(queue='red_notices_queue')
 channel.queue_declare(queue='red_notices_queue', durable=True)
+
 
 # to consume of the queue
 channel.basic_consume(queue='red_notices_queue', on_message_callback=callback, auto_ack=True)

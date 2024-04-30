@@ -3,17 +3,20 @@ import pika
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver import DesiredCapabilities
 
 # load up the options to change
 options = Options()
 
+# less secure, faster for development
 options.add_argument("--headless")
-# # less secure/faster for development, some needed for Docker
+options.add_argument("window-size=1920,1080")
+user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
+options.add_argument(f'user-agent={user_agent}')
 options.add_argument("--no-sandbox")
 # overcome limited resource problems
 options.add_argument("--disable-dev-shm-usage")
-user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
-options.add_argument(f'user-agent={user_agent}')
+
 
 
 # scraping function , first page only
@@ -22,28 +25,59 @@ def findRedNotices():
     # go to redflag page
     url = "https://www.interpol.int/How-we-work/Notices/Red-Notices/View-Red-Notices/"
     driver = webdriver.Chrome(options=options)
+    # go to the page
     driver.get(url)
-    # driver = seleniumbase.Driver(browser="chrome", headless=False)
-    # url = "https://www.interpol.int/How-we-work/Notices/Red-Notices/View-Red-Notices/"
-    # driver.get(url)
 
-    # give it 2 secs
-    time.sleep(1)
+    # load up the page
+    time.sleep(2)
     # to store later
     red_notices_list = []
 
     # pull the name
-    names = driver.find_elements(By.CLASS_NAME, "redNoticeItem__labelLink")
+    # names = driver.find_elements(By.CLASS_NAME, "redNoticeItem__labelLink")
     # pull the age
-    ages = driver.find_elements(By.CLASS_NAME, "age")
+    # ages = driver.find_elements(By.CLASS_NAME, "age")
     # pull the nationality
-    nationalities = driver.find_elements(By.CLASS_NAME, "nationalities")
+    # nationalities = driver.find_elements(By.CLASS_NAME, "nationalities")
+    # find the next element button
+    nxt = driver.find_element(By.CLASS_NAME, "nextElement")
+    # last page will be [] in the beginning
+    # last_page = driver.find_elements(By.CLASS_NAME, "nextElement hidden")
+    pg = 1
+    i = 1
+    right_arrow = driver.find_elements(By.CLASS_NAME, "nextIndex right-arrow")
 
-    for name_element, age_element, nation_element in zip(names, ages, nationalities):
-        name = name_element.text.replace("\n", "")
-        age = age_element.text
-        nationality = nation_element.text
-        red_notices_list.append({"Name": name, "Age": age, "Nationalities": nationality})
+    # go through the pages as long as there is a next page button and last_page button doesn't exist
+    # while nxt && len(next_page) != 0::
+    while not right_arrow:
+        try:
+            i += 1
+            print(f"Pulling the names on Page {pg}")
+            # pull the name
+            names = driver.find_elements(By.CLASS_NAME, "redNoticeItem__labelLink")
+            # pull the age
+            ages = driver.find_elements(By.CLASS_NAME, "age")
+            # pull the nationality
+            nationalities = driver.find_elements(By.CLASS_NAME, "nationalities")
+            for name_element, age_element, nation_element in zip(names, ages, nationalities):
+                name = name_element.text.replace("\n", "")
+                age = age_element.text
+                nationality = nation_element.text
+                red_notices_list.append({"Name": name, "Age": age, "Nationalities": nationality})
+            print("Finished pulling the data on this page")
+            # scroll to the bottom
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            # click on the next page
+            nxt.click()
+            time.sleep(2)
+            print(f"Page number {pg} have been successfully retrieved, going to the next page")
+            pg += 1
+            nxt = driver.find_element(By.CLASS_NAME, "nextElement")
+            right_arrow = driver.find_elements(By.CLASS_NAME, "nextIndex right-arrow")
+            # once went through all pages, next page button will disappear
+        except:
+            print("The last page has been retrieved.")
+            break
 
     driver.quit()
 

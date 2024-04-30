@@ -1,20 +1,8 @@
 version: '3'
-
 services:
 
-  container_c:
-    image: rabbitmq:3-management
-    ports:
-      - "15672:15672"
-
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
   container_a:
-    image: rabbitmq:3-management
+    image: tariksalay/container_a:latest
     environment:
       INTERVAL: 300
     depends_on:
@@ -22,9 +10,17 @@ services:
     restart: on-failure
 
   container_b:
-    image: rabbitmq:3-management
+    image: tariksalay/container_b:latest
     ports:
       - "8080:5000"
     depends_on:
       - container_a
       - container_c
+
+  container_c:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+

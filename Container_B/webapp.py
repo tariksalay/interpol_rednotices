@@ -14,9 +14,9 @@ current_time = datetime.now(tz=turkey_timezone).strftime("%Y-%m-%d %H:%M:%S")
 
 # Establish connection to PostgreSQL DB
 connection = psycopg2.connect(
-    dbname="postgres_db",
+    dbname="postgres",
     user="postgres",
-    password="postgres",
+    password="password",
     host="localhost",
     port="5432"
 )
@@ -33,7 +33,7 @@ def definition():
     cursor = connection.cursor()
 
     # Query the 'interpol_rednotices' table to pull all
-    cursor.execute("SELECT * FROM interpol_rednotices LIMIT 20")
+    cursor.execute("SELECT * FROM interpol_rednotices")
     data = cursor.fetchall()
 
     # Commit the transaction and close the cursor
