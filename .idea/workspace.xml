@@ -6,11 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ee960d0e-5ede-41a3-b949-f8cac2894b6d" name="Changes" comment="head">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_A/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Container_A/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_A/scraper_producer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Container_A/scraper_producer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_B/consumer_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/consumer_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Container_B/webapp.py" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/webapp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -311,7 +306,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714073448714</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="head">
+      <option name="closed" value="true" />
+      <created>1714472549084</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1714472549084</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -360,7 +363,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="HEAD" />
+                        <option value="master_head" />
                       </list>
                     </value>
                   </entry>
