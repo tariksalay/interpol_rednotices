@@ -62,6 +62,8 @@ channel = rabbitmq_connection.channel()  # creates the channel
 # wherever the code executes first will declare the queue while the other one is ignored
 # durable=True for Docker
 # queue = channel.queue_declare(queue='red_notices_queue')
+
+# to use later for stopping consume
 queue = channel.queue_declare(queue='red_notices_queue', durable=True)
 # channel.queue_declare(queue='red_notices_queue')
 channel.queue_declare(queue='red_notices_queue', durable=True)

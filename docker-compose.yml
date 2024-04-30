@@ -1,8 +1,12 @@
 version: '3'
 services:
 
+#worker
   container_a:
-    image: tariksalay/container_a:latest
+    build:
+      context: ./Container_A/
+      dockerfile: Dockerfile
+    image: container_a:latest
     environment:
       INTERVAL: 300
     depends_on:
@@ -10,7 +14,10 @@ services:
     restart: on-failure
 
   container_b:
-    image: tariksalay/container_b:latest
+    build:
+      context: ./Container_B/
+      dockerfile: Dockerfile
+    image: container_b:latest
     ports:
       - "8080:5000"
     depends_on:
@@ -18,9 +25,13 @@ services:
       - container_c
 
   container_c:
-    image: rabbitmq:3-management
+    image: rabbitmq:3
     restart: always
     ports:
       - "5672:5672"
       - "15672:15672"
-
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 5s
+      timeout: 10s
+      retries: 1

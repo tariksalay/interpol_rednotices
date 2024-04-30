@@ -6,6 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ee960d0e-5ede-41a3-b949-f8cac2894b6d" name="Changes" comment="head">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Container_B/consumer_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/consumer_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Container_B/webapp.py" beforeDir="false" afterPath="$PROJECT_DIR$/Container_B/webapp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +115,7 @@
       <recent name="C:\Users\user\PycharmProjects\tarik\Container_A" />
     </key>
   </component>
-  <component name="RunManager" selected="Docker.docker-compose.yml.container_a-1: Compose Deployment">
+  <component name="RunManager" selected="Docker.docker-compose.yml.container_a: Compose Deployment">
     <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
       <deployment type="docker-compose.yml">
         <settings />
@@ -187,8 +190,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Docker.docker-compose.yml.container_a-1: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yml.container_a: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yml.container_a-1: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yml.container_c: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yml.container_b: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
@@ -323,7 +326,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714473624631</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="head">
+      <option name="closed" value="true" />
+      <created>1714475538675</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1714475538675</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

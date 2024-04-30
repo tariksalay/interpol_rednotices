@@ -14,9 +14,9 @@ current_time = datetime.now(tz=turkey_timezone).strftime("%Y-%m-%d %H:%M:%S")
 
 # Establish connection to PostgreSQL DB
 connection = psycopg2.connect(
-    dbname="postgres",
+    dbname="postgres_db",
     user="postgres",
-    password="password",
+    password="postgres",
     host="localhost",
     port="5432"
 )
