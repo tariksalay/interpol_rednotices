@@ -1,6 +1,3 @@
-TURK AI YAPAY ZEKA BİLİŞİM VE YAZILIM SİSTEMLERİ A.Ş
-Python Geliştirici Görevi
-
 Görev Konusu :
 Bu görevde,  Interpol tarafından yayınlanan arananlar verisi çekilir ve kuyruğa yazılır. Kuyruktan okunan bu bilgiler veritabanına kayıt edilir ve bir web server üzerinden paylaşılır. Uygulama aşağıda belirtilen mimaride yapılmalıdır.
 Tüm işlemler kullanıcıya görsel bir arayüz ile sunulmalı ve docker ortamına uygun şekilde hazırlanmalıdır.
