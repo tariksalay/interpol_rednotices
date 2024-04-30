@@ -107,6 +107,7 @@
       <recent name="C:\Users\user\Downloads\interpol_rednotices-master\Container_C" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\user\Desktop\docker-demo\interpol_rednotices-master" />
       <recent name="C:\Users\user\PycharmProjects\tarik\Container_B" />
       <recent name="C:\Users\user\PycharmProjects\tarik\Container_A" />
     </key>
@@ -314,7 +315,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714472549084</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="head">
+      <option name="closed" value="true" />
+      <created>1714473624631</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1714473624631</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
