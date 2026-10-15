@@ -1,13 +1,4 @@
-#!/bin/bash
-sleep 10
-
-service postgresql start
-
-su postgres -c "psql -U postgres -c \"create database postgres_db;\""
-su postgres -c "psql -U postgres -c \"alter user postgres password 'postgres';\""
-
-python /app/consumer_db.py
-wait
-
-python /app/webapp.py
-
+#!/bin/sh
+# PostgreSQL and the consumer now run as separate Compose services.
+set -eu
+exec gunicorn --bind 0.0.0.0:5000 --workers 2 webapp:webapp

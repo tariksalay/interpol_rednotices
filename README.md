@@ -1,83 +1,46 @@
-# Interpol Red Notices — Python Data Pipeline
+# Red Notices Data Pipeline
 
-**Portfolio project · Python · Selenium · RabbitMQ · PostgreSQL · Flask · Docker Compose**
+**Python · Selenium · RabbitMQ · PostgreSQL · Flask · Docker Compose**
 
-This prototype explores an event-driven data ingestion workflow: a Selenium-based collector reads information from the public INTERPOL Red Notices site, publishes records to RabbitMQ, and a Python consumer stores them in PostgreSQL for display through a Flask page.
+A local ingestion prototype with separate collection, messaging, persistence, and presentation responsibilities. A bounded Selenium collector publishes JSON records, a consumer saves them to PostgreSQL, and a read-only Flask page displays stored rows.
 
-> **Status:** Historical proof of concept, not a maintained production service. The source has known reliability and security limitations described below. Its Docker setup has not been revalidated against current dependency versions.
+## What this project demonstrates
 
-## Architecture
+- A producer/consumer contract with durable queue messages.
+- Acknowledging messages after database commits.
+- Container service boundaries, readiness dependencies, and environment configuration.
 
-```mermaid
-flowchart LR
-  A[INTERPOL public notices page] --> B[Container A: Python + Selenium producer]
-  B --> C[Container C: RabbitMQ queue]
-  C --> D[Container B: Python consumer]
-  D --> E[(PostgreSQL)]
-  E --> F[Flask web page]
+## Start here
+
+| Read | Use it for |
+| --- | --- |
+| [Project walkthrough](docs/PROJECT_GUIDE.md) | Purpose, workflow, repository map, and a concrete example |
+| [Code and artifact reference](docs/CODE_REFERENCE.md) | Important files, functions, classes, and their responsibilities |
+| [Development guide](docs/DEVELOPMENT.md) | Setup, configuration, commands, tests, and remaining limitations |
+
+## Explore locally
+
+Docker and Compose are required for integration exploration.
+
+```sh
+cp .env.example .env
+# Fill the two empty password settings with local URL-safe values.
+docker compose config
+docker compose up --build -d
+# Explicit optional collection:
+docker compose --profile collect run --rm container_a
 ```
 
-| Component | Responsibility | Main files |
-| --- | --- | --- |
-| Container A | Collect notices and publish messages | `Container_A/scraper_producer.py` |
-| Container C | Deliver messages between the producer and consumer | `rabbitmq:3` in `docker-compose.yml` |
-| Container B | Consume messages, save records, and render the web interface | `Container_B/consumer_db.py`, `Container_B/webapp.py` |
+The UI binds to `127.0.0.1:8080`. Read the development guide before collecting live data.
 
-PostgreSQL runs inside Container B in the existing implementation; it is not a separate Compose service.
+## Validation and scope
 
-## What the project demonstrates
+Six tests pass with synthetic records and mocked database/broker resources. Compose structure was checked statically; Docker builds, live service integration, Chromium behavior, and current site selectors remain unverified. This is a historical educational prototype, not an authoritative notices service.
 
-- Browser-driven ingestion of publicly available data with Python and Selenium.
-- Producer/consumer messaging using a durable RabbitMQ queue.
-- PostgreSQL persistence and a lightweight Flask reporting interface.
-- Multi-container application structure with Docker Compose.
 
-## Repository layout
 
-```text
-interpol_rednotices/
-├── Container_A/
-│   ├── Dockerfile
-│   ├── reqs.txt
-│   └── scraper_producer.py
-├── Container_B/
-│   ├── Dockerfile
-│   ├── consumer_db.py
-│   ├── pg_hba.conf
-│   ├── reqs.txt
-│   ├── start_app.sh
-│   ├── templates/definition.html
-│   └── webapp.py
-├── Container_C/
-│   └── Dockerfile
-└── docker-compose.yml
-```
+---
 
-## Local exploration
+[GitHub profile](https://github.com/tariksalay) · [Portfolio](https://tariksalay.github.io/) · [Earlier README](README_HISTORY.md)
 
-Prerequisites: Docker and Docker Compose. From the repository root, the intended workflow is:
-
-```bash
-docker compose up --build
-```
-
-The Compose file maps the Flask service to `http://localhost:8080`. **This is a description of the intended interface, not a claim that the current project starts successfully.** The legacy configuration has hard-coded networking and startup assumptions that need to be resolved before it can be treated as a reliable one-command demo.
-
-## Known limitations and next improvements
-
-1. **Networking:** Both Python messaging scripts connect to a hard-coded `172.17.0.2` address instead of the Compose service name `container_c`.
-2. **Message safety:** The consumer parses queue bodies using `eval()`. This should be replaced with JSON serialization and `json.loads()` before processing any untrusted data.
-3. **Configuration:** PostgreSQL credentials are hard-coded for development and need environment-variable configuration and stronger defaults.
-4. **Startup lifecycle:** `Container_B/start_app.sh` runs the message consumer before the Flask process. The consumer's blocking behavior may delay or prevent the web UI from starting.
-5. **Scheduling:** An `INTERVAL` environment variable appears in Compose, but the current producer script performs a single collection pass rather than a scheduled loop.
-6. **Quality:** Automated tests, CI, dependency pinning, and end-to-end setup verification have not yet been added.
-
-These are candidates for a follow-up engineering cleanup, separate from this documentation update.
-
-## Data and disclaimer
-
-The source is the [public INTERPOL Red Notices site](https://www.interpol.int/How-we-work/Notices/Red-Notices/View-Red-Notices/). This educational project is not affiliated with INTERPOL. Red Notices and public listings can change; use INTERPOL's official website for current information. Do not treat this demo as a current or authoritative people-identification database.
-
-## Author
-
-[Tarik Salay](https://github.com/tariksalay) · [LinkedIn](https://www.linkedin.com/in/tariksalay/) · [Portfolio](https://tariksalay.github.io/)
+The earlier README is preserved as historical context; the guides above describe this branch's implementation.
