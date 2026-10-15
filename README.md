@@ -1,79 +1,83 @@
-# **Interpol Red Notices Web Application**
+# Interpol Red Notices — Python Data Pipeline
 
-## **Introduction**
-This Dockerized project fetches data from Interpol's wanted list using a Python app. Periodically, the retrieved red notices are stored in a message queue system and then consumed by a web server. The server saves the data into a database and displays it on a web page, timestamped. The architecture involves three Docker containers, facilitating seamless operation and scalability.
+**Portfolio project · Python · Selenium · RabbitMQ · PostgreSQL · Flask · Docker Compose**
 
-## **Project Structure**
-- app/
-	- Container_A
-		- Dockerfile
-		- producer.py
-		- reqs.txt
-		- scraper.py
-	- Container_B
-		- consumer.py
-		- db.py
-		- Dockerfile
-- flask.py
-- reqs.txt
-	- Container_C
-		- Dockerfile
-		- reqs.txt
+This prototype explores an event-driven data ingestion workflow: a Selenium-based collector reads information from the public INTERPOL Red Notices site, publishes records to RabbitMQ, and a Python consumer stores them in PostgreSQL for display through a Flask page.
 
+> **Status:** Historical proof of concept, not a maintained production service. The source has known reliability and security limitations described below. Its Docker setup has not been revalidated against current dependency versions.
 
-## **Architecture**
-The application is composed of three Docker containers:
+## Architecture
 
-1. **'Container A'**: This container retrieves the data from the Interpol’s website and pulls red notices and puts it into the message queue system in Container C.
+```mermaid
+flowchart LR
+  A[INTERPOL public notices page] --> B[Container A: Python + Selenium producer]
+  B --> C[Container C: RabbitMQ queue]
+  C --> D[Container B: Python consumer]
+  D --> E[(PostgreSQL)]
+  E --> F[Flask web page]
+```
 
-2. **'Container B'**: The Python-based web server in this container actively monitors the message queue system hosted in Container C. Upon receiving new data, it securely stores it in the designated database and promptly showcases it on a straightforward HTML web page, accompanied by a timestamp. Real-time updates on the web page occur whenever fresh data is fetched from the queue. Moreover, should an existing record undergo modification, the web page promptly alerts users with an alarm notification.
+| Component | Responsibility | Main files |
+| --- | --- | --- |
+| Container A | Collect notices and publish messages | `Container_A/scraper_producer.py` |
+| Container C | Deliver messages between the producer and consumer | `rabbitmq:3` in `docker-compose.yml` |
+| Container B | Consume messages, save records, and render the web interface | `Container_B/consumer_db.py`, `Container_B/webapp.py` |
 
-3. **'Container C'**: This container consists of the messages passed by message queue system RabbitMQ.
+PostgreSQL runs inside Container B in the existing implementation; it is not a separate Compose service.
 
+## What the project demonstrates
 
-## **Documentation**
+- Browser-driven ingestion of publicly available data with Python and Selenium.
+- Producer/consumer messaging using a durable RabbitMQ queue.
+- PostgreSQL persistence and a lightweight Flask reporting interface.
+- Multi-container application structure with Docker Compose.
 
-* **'reqs.txt'**: Text file that contains a list of Python library dependencies required to run the application
-* **'scraper_producer.py'**: Python script that scrapes data from Interpol and pushes to a declare message queue
-* **'definition.html'**: HTML file to structure the content of the web page
-* **'consumer_db.py'**: Python script that consumes the message from queue and stores it on Postgres database
-* **'pg_hba.py'**: PostgreSQL client authentication configuration file
-* **'start_app.sh'**: Shell script to start Postgres database
-* **'webapp.py'**: Python script to publish the stored data on a web application
-* **'docker-compose.yml'**: The Docker Compose configuration to define and manage multi-container application, in a YAML file.
-* **'README.md'**: Th text file describing this project
+## Repository layout
 
+```text
+interpol_rednotices/
+├── Container_A/
+│   ├── Dockerfile
+│   ├── reqs.txt
+│   └── scraper_producer.py
+├── Container_B/
+│   ├── Dockerfile
+│   ├── consumer_db.py
+│   ├── pg_hba.conf
+│   ├── reqs.txt
+│   ├── start_app.sh
+│   ├── templates/definition.html
+│   └── webapp.py
+├── Container_C/
+│   └── Dockerfile
+└── docker-compose.yml
+```
 
-## **Extra: Topics to Cover**
+## Local exploration
 
-* **'Scraper (Selenium)'**
-* **'Producer (RabbitMQ)'**
-* **'Consumer (RabbitMQ)'**
-* **'Database (PostgreSQL) '**
-* **'Web App (Flask)'**
-* **'HTML'**
-* **'Containerize (Docker)'**
-* **'Version-Control (Git)'**
-* **'Docker Containers: A (Scraper + Producer) -> C (RabbitMQ) -> B (Consumer + DB + Web App)'**
+Prerequisites: Docker and Docker Compose. From the repository root, the intended workflow is:
 
-# **This task in Turkish:**
+```bash
+docker compose up --build
+```
 
-## **Görev Konusu**
-Bu görevde,  Interpol tarafından yayınlanan arananlar verisi çekilir ve kuyruğa yazılır. Kuyruktan okunan bu bilgiler veritabanına kayıt edilir ve bir web server üzerinden paylaşılır. Uygulama aşağıda belirtilen mimaride yapılmalıdır.
-Tüm işlemler kullanıcıya görsel bir arayüz ile sunulmalı ve docker ortamına uygun şekilde hazırlanmalıdır.
+The Compose file maps the Flask service to `http://localhost:8080`. **This is a description of the intended interface, not a claim that the current project starts successfully.** The legacy configuration has hard-coded networking and startup assumptions that need to be resolved before it can be treated as a reliable one-command demo.
 
-## **Gerekli Maddeler**:
-* **'Container A'**: Mimari 3 container'dan oluşmaktadır. Belirli bir periyot süre ile sürekli olarak “Interpol” tarafından yayınlanan kırmızı liste verisi çekilir ve Container C'de bulunan kuyruk sistemine aktarılır 
-* **'Container B'**: Python ile hazırlanmış bir web sunucu olmalıdır. Burada Container C de bulunan kuyruk dinlenmelidir. Kuyruktan elde edilen bilgiler istenilen veritabanında kaydedilmelidir. Bu bilgiler web sunucu ile basit bir html web sayfasında zaman bilgisi ile birlikte gösterilmelidir. Kuyruktan elde edilen her bilgi web sunucunun paylaştığı arayüz sayfası güncellenmelidir. Önceden kayıt edilmiş bilgilerin güncellenmesi durumu ise alarm olarak arayüzde gösterilmelidir.
-* **'Container C '**: Bir mesaj kuyruğu sistemi olan “RabbitMQ” bulunmaktadır.
-Yapıda değişkenlerin enviroment-config üzerinden müdahele edilebilir olması gerekmektedir (koda müdahale etmeden değişiklik yapılabilmeli),
-Yapının Nesne Tabanlı Programlama temellerine göre oluşturulması,
-İstenilen yazılım Docker ortamına uygun şekilde hazırlanmalıdır ve dockerize edilerek build ve deploy işlemleri yapılmalıdır. Docker-compose kullanılmalıdır,
-Yazılım testleri, yazılımın çalışma gereksinimleri, yorumları ve detaylı açıklama dosyası gibi dokumantasyon ve kurulum yönergeleri hazırlanmalıdır. (requirements.txt, doc-test, readme.md, .dockerfile, vs.) 
+## Known limitations and next improvements
 
-## **Bilgilendirme**:
-Görev süresince python programlama dili kullanılmalıdır.
-Her türlü açık kaynaktan yararlanılabilir.
-Sizden beklenilen, kullandığınız/yazdığınız kodları anlamanız ve açıklamanızdır.
-Gerekli maddelerin tamamının yapılamaması durumunda, yapılan maddelere göre değerlendirilme yapılacaktır.
-Proje github yada gitlab ortamında geliştirilmelidir.
+1. **Networking:** Both Python messaging scripts connect to a hard-coded `172.17.0.2` address instead of the Compose service name `container_c`.
+2. **Message safety:** The consumer parses queue bodies using `eval()`. This should be replaced with JSON serialization and `json.loads()` before processing any untrusted data.
+3. **Configuration:** PostgreSQL credentials are hard-coded for development and need environment-variable configuration and stronger defaults.
+4. **Startup lifecycle:** `Container_B/start_app.sh` runs the message consumer before the Flask process. The consumer's blocking behavior may delay or prevent the web UI from starting.
+5. **Scheduling:** An `INTERVAL` environment variable appears in Compose, but the current producer script performs a single collection pass rather than a scheduled loop.
+6. **Quality:** Automated tests, CI, dependency pinning, and end-to-end setup verification have not yet been added.
+
+These are candidates for a follow-up engineering cleanup, separate from this documentation update.
+
+## Data and disclaimer
+
+The source is the [public INTERPOL Red Notices site](https://www.interpol.int/How-we-work/Notices/Red-Notices/View-Red-Notices/). This educational project is not affiliated with INTERPOL. Red Notices and public listings can change; use INTERPOL's official website for current information. Do not treat this demo as a current or authoritative people-identification database.
+
+## Author
+
+[Tarik Salay](https://github.com/tariksalay) · [LinkedIn](https://www.linkedin.com/in/tariksalay/) · [Portfolio](https://tariksalay.github.io/)
