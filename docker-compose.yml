@@ -1,37 +1,72 @@
-version: '3'
-services:
+x-database-env: &database-env
+  PGHOST: postgres
+  PGDATABASE: notices
+  PGUSER: notices
+  PGPASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
 
-#worker
+services:
   container_a:
-    build:
-      context: ./Container_A/
-      dockerfile: Dockerfile
-    image: container_a:latest
+    build: ./Container_A
+    profiles: [collect]
     environment:
-      INTERVAL: 300
+      AMQP_URL: amqp://${RABBITMQ_USER:-notices}:${RABBITMQ_PASSWORD:?Set RABBITMQ_PASSWORD in .env}@container_c:5672/%2F
+      MAX_PAGES: ${MAX_PAGES:-1}
+      CHROME_NO_SANDBOX: ${CHROME_NO_SANDBOX:-0}
     depends_on:
-      - container_c
-    restart: on-failure
+      container_c:
+        condition: service_healthy
 
   container_b:
-    build:
-      context: ./Container_B/
-      dockerfile: Dockerfile
-    image: container_b:latest
-    ports:
-      - "8080:5000"
+    build: ./Container_B
+    image: interpol-notices-app:local
+    environment: *database-env
+    ports: ["127.0.0.1:8080:5000"]
     depends_on:
-      - container_a
-      - container_c
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+
+  consumer:
+    build: ./Container_B
+    image: interpol-notices-app:local
+    command: ["python", "consumer_db.py"]
+    environment:
+      <<: *database-env
+      AMQP_URL: amqp://${RABBITMQ_USER:-notices}:${RABBITMQ_PASSWORD:?Set RABBITMQ_PASSWORD in .env}@container_c:5672/%2F
+    depends_on:
+      postgres:
+        condition: service_healthy
+      container_c:
+        condition: service_healthy
+    restart: on-failure
 
   container_c:
-    image: rabbitmq:3
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+    image: rabbitmq:4-management
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-notices}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:?Set RABBITMQ_PASSWORD in .env}
+    volumes: [rabbitmq-data:/var/lib/rabbitmq]
     healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
-      interval: 5s
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
       timeout: 10s
-      retries: 1
+      retries: 12
+
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: notices
+      POSTGRES_USER: notices
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U notices -d notices"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  postgres-data:
+  rabbitmq-data:

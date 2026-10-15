@@ -1,127 +1,83 @@
-import time
+"""Bounded, explicit collection of public notices followed by JSON publication."""
+import json
+import logging
+import os
+
 import pika
 from selenium import webdriver
-from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
-# load up the options to change
-options = Options()
-
-# less secure, faster for development
-options.add_argument("--headless")
-options.add_argument("window-size=1920,1080")
-user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
-options.add_argument(f'user-agent={user_agent}')
-options.add_argument("--no-sandbox")
-# overcome limited resource problems
-options.add_argument("--disable-dev-shm-usage")
+URL = 'https://www.interpol.int/How-we-work/Notices/Red-Notices/View-Red-Notices/'
+QUEUE = 'red_notices_queue'
+LOGGER = logging.getLogger(__name__)
 
 
-
-# scraping function , first page only
-def findRedNotices():
-    # start Chrome
-    # go to redflag page
-    url = "https://www.interpol.int/How-we-work/Notices/Red-Notices/View-Red-Notices/"
-    driver = webdriver.Chrome(options=options)
-    # go to the page
-    driver.get(url)
-
-    # load up the page
-    time.sleep(2)
-    # to store later
-    red_notices_list = []
-
-    # pull the name
-    # names = driver.find_elements(By.CLASS_NAME, "redNoticeItem__labelLink")
-    # pull the age
-    # ages = driver.find_elements(By.CLASS_NAME, "age")
-    # pull the nationality
-    # nationalities = driver.find_elements(By.CLASS_NAME, "nationalities")
-    # find the next element button
-    nxt = driver.find_element(By.CLASS_NAME, "nextElement")
-    # last page will be [] in the beginning
-    # last_page = driver.find_elements(By.CLASS_NAME, "nextElement hidden")
-    pg = 1
-    i = 1
-    right_arrow = driver.find_elements(By.CLASS_NAME, "nextIndex right-arrow")
-
-    # go through the pages as long as there is a next page button and last_page button doesn't exist
-    # while nxt && len(next_page) != 0::
-    while not right_arrow:
-        try:
-            i += 1
-            print(f"Pulling the names on Page {pg}")
-            # pull the name
-            names = driver.find_elements(By.CLASS_NAME, "redNoticeItem__labelLink")
-            # pull the age
-            ages = driver.find_elements(By.CLASS_NAME, "age")
-            # pull the nationality
-            nationalities = driver.find_elements(By.CLASS_NAME, "nationalities")
-            for name_element, age_element, nation_element in zip(names, ages, nationalities):
-                name = name_element.text.replace("\n", "")
-                age = age_element.text
-                nationality = nation_element.text
-                red_notices_list.append({"Name": name, "Age": age, "Nationalities": nationality})
-            print("Finished pulling the data on this page")
-            # scroll to the bottom
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            # click on the next page
-            nxt.click()
-            time.sleep(2)
-            print(f"Page number {pg} have been successfully retrieved, going to the next page")
-            pg += 1
-            nxt = driver.find_element(By.CLASS_NAME, "nextElement")
-            right_arrow = driver.find_elements(By.CLASS_NAME, "nextIndex right-arrow")
-            # once went through all pages, next page button will disappear
-        except:
-            print("The last page has been retrieved.")
-            break
-
-    driver.quit()
-
-    # return the list
-    return red_notices_list
+def findRedNotices(max_pages=1):
+    if max_pages < 1:
+        raise ValueError('max_pages must be positive')
+    options = Options()
+    options.add_argument('--headless=new')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--window-size=1920,1080')
+    # This is opt-in; do not disable Chrome sandbox protection by default.
+    if os.getenv('CHROME_NO_SANDBOX') == '1':
+        options.add_argument('--no-sandbox')
+    if os.getenv('CHROME_BINARY'):
+        options.binary_location = os.environ['CHROME_BINARY']
+    service = Service(executable_path=os.environ['CHROMEDRIVER']) if os.getenv('CHROMEDRIVER') else Service()
+    driver = webdriver.Chrome(options=options, service=service)
+    notices = []
+    try:
+        driver.set_page_load_timeout(30)
+        driver.get(URL)
+        wait = WebDriverWait(driver, 15)
+        previous = None
+        for _ in range(max_pages):
+            names = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'redNoticeItem__labelLink')))
+            ages = driver.find_elements(By.CLASS_NAME, 'age')
+            nations = driver.find_elements(By.CLASS_NAME, 'nationalities')
+            if not (len(names) == len(ages) == len(nations)):
+                raise RuntimeError('Notice markup changed: field counts do not match')
+            page = [(n.text.replace('\n', ' ').strip(), a.text, country.text)
+                    for n, a, country in zip(names, ages, nations)]
+            if not page or page == previous:
+                break
+            notices.extend(dict(zip(('Name', 'Age', 'Nationalities'), record)) for record in page)
+            previous = page
+            if len(notices) and _ + 1 < max_pages:
+                buttons = driver.find_elements(By.CSS_SELECTOR, '.nextElement:not(.hidden)')
+                if not buttons or not buttons[0].is_displayed() or not buttons[0].is_enabled():
+                    break
+                first_name = names[0]
+                buttons[0].click()
+                # If navigation does not replace the results, report the timeout instead of duplicating a page.
+                wait.until(EC.staleness_of(first_name))
+        return notices
+    finally:
+        driver.quit()
 
 
-# Push red notices list to rabbitmq queue
-
-def send_to_rabbitmq(message):
-    # Connect to MQ
-    connection_parameters = pika.ConnectionParameters('172.17.0.2')
-    # connection_parameters = pika.ConnectionParameters('localhost')
-    rabbitmq_connection = pika.BlockingConnection(connection_parameters)
-    channel = rabbitmq_connection.channel()  # creates the channel
-
-    # Declare a queue along with its name
-    # Durable = true to make the queue survive a broker restart
-    # durable=True for Docker
-    channel.queue_declare(queue='red_notices_queue', durable=True)
-    # channel.queue_declare(queue='red_notices_queue')
-    print("Queue has been declared")
-
-    # publish each item of data to the Container_C queue
-    # message is the function parameter here, list of red notice people
-    # basic_publish method pushes each person's data down to the queue
-    for i in message:
-        channel.basic_publish(exchange='',
-                              routing_key='red_notices_queue',
-                              body=str(i),
-                              properties=pika.BasicProperties(
-                                  delivery_mode=2,
-                              ))
-
-    print(f"The updated list of Red Notices below has been pushed to the queue: \n{message}")
-
-    # to not leave connection hanging
-    # connection/channel will be closed, but the queue will have the message stored
-    rabbitmq_connection.close()
+def send_to_rabbitmq(messages):
+    connection = pika.BlockingConnection(pika.URLParameters(os.environ['AMQP_URL']))
+    try:
+        channel = connection.channel()
+        channel.queue_declare(queue=QUEUE, durable=True)
+        channel.confirm_delivery()
+        for notice in messages:
+            channel.basic_publish(exchange='', routing_key=QUEUE,
+                                  body=json.dumps(notice, ensure_ascii=False).encode('utf-8'),
+                                  mandatory=True, properties=pika.BasicProperties(
+                                      delivery_mode=2, content_type='application/json'))
+        LOGGER.info('Published %d notice records', len(messages))
+    finally:
+        connection.close()
 
 
-if __name__ == "__main__":
-    # stores the red notices
-    redNotices = findRedNotices()
-
-    # send the red notices
-    send_to_rabbitmq(redNotices)
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
+    send_to_rabbitmq(findRedNotices(int(os.getenv('MAX_PAGES', '1'))))
